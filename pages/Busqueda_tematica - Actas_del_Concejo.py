@@ -23,8 +23,20 @@ mostrar_descarga_correo = False
 
 encabezado()
 
-st.write("**HERE ADD ONE DESCRIPTION**")
+# Encabezado de la aplicación
+st.markdown(''' ## **Buscador Temático - Actas del Concejo de Medellín** 🕵️‍♂️📜 ''')
 
+# Configuración de la Búsqueda:
+st.write("""
+   - En la sección "Ingresa el operador lógico y las palabras clave":
+      - Selecciona el operador lógico (AND, OR, NONE) que mejor se adapte a tu búsqueda. 🤔
+      - Si utilizas solo una palabra clave, selecciona el operador lógico 'NONE'. 🧐
+      - En el cuadro de texto, introduce una o varias palabras clave, separadas por comas, que desees buscar dentro de las intervenciones del Concejo de Medellín. 📚
+      - Una vez completada la búsqueda, puedes interactuar directamente con la tabla que se despliega. 🎉 Descárgala mediante el botón 'Descargar CSV' o envíala al correo que prefieras. 📤
+""")
+
+
+st.write("**HERE ADD ONE DESCRIPTION**")
 keyword_list: list = []
 st.markdown('### **Ingresa el operador lógico y las palabras clave**')
 
@@ -34,18 +46,18 @@ with st.form("Ingresa el operador lógico y las palabras clave"):
     operador = st.selectbox('Operador: AND - OR - NONE',
                             ('AND', 'OR', 'NONE'))
     keyword = st.text_input('Ingrese la(s) palabra(s) clave(s). En caso de múltiples palabras clave, ingréselas separadas por comas.')
-    keyword = keyword.replace(' ', '').split(',')
+    keyword = keyword.lstrip().rstrip().split(',')
     
     submitted = st.form_submit_button("Submit")
     if submitted:
         with st.spinner('Buscando...'):
-            df_procesadas = pd.read_csv('/home/mongar/Desktop/audio_a_texto/intervenciones_concejo_medellin.csv')
+            df_procesadas = pd.read_csv('intervenciones_concejo_medellin.csv')
 
             def buscador_and(palabras_claves, df):
                 palabras_claves = [unidecode(palabra).lower() for palabra in palabras_claves]
                 def verificador_de_palabras(texto):
                     for palabra in palabras_claves:
-                        if palabra.lower() not in unidecode(texto).lower():
+                        if palabra.lower().strip() not in unidecode(texto).lower():
                             return False
                     return True  # Agregado para casos en los que no hay discrepancias
                 
@@ -62,7 +74,7 @@ with st.form("Ingresa el operador lógico y las palabras clave"):
             expresion_regular: str = '|'.join(palabras_claves)
 
             # Dataframe con una palabras claves y operador NONE
-            df_intervenciones_filtrado_una_key = df_procesadas[df_procesadas['intervencion'].str.contains(palabras_claves[-1], case=False)]
+            df_intervenciones_filtrado_una_key = df_procesadas[df_procesadas['intervencion'].str.contains(palabras_claves[0], case=False)]
 
             # Dataframe con las palabras palabras claves y operador OR
             df_intervenciones_filtrado_or = df_procesadas[df_procesadas['intervencion'].str.contains(expresion_regular, case=False, regex=True)]
@@ -73,7 +85,7 @@ with st.form("Ingresa el operador lógico y las palabras clave"):
             dict_intervenciones_filtradas: dict = {
                 'OR': df_intervenciones_filtrado_or,
                 'AND': df_intervenciones_filtrado_and,
-                'NONE': df_intervenciones_filtrado_una_key
+                'NONE': df_intervenciones_filtrado_and
             }
 
             motrar_resultado = True
@@ -94,10 +106,7 @@ with st.form("Ingresa el operador lógico y las palabras clave"):
                 mostrar_descarga_correo = True
                 st.success('¡Búsqueda completada!')
 
-
-
 #if mostrar_descarga_correo == True:
-
 with st.spinner('Enviando...', ):
     # Agregar un botón para descargar el archivo CSV
     with open(ruta_nombre_archivo, "r") as file:
@@ -106,8 +115,7 @@ with st.spinner('Enviando...', ):
             data=file,
             file_name='resultados_busqueda.csv',
         )
-
-
+        
 # Agregar un botón para enviar por correo electrónico
     with st.form("Ingresa el correo electronico"):
         correo_destino = st.text_input('Ingrese el correo electrónico de destino y luego Submit')
@@ -116,7 +124,6 @@ with st.spinner('Enviando...', ):
             st.success(f'El correo al que se enviará el archivo es: {correo_destino}')  
             correo2(ruta_nombre_archivo,correo_destino)
             st.balloons()
-
             
 st.write("Outside the form")
 #st.stop()
