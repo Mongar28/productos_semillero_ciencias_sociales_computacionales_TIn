@@ -40,7 +40,7 @@ def importar_audio_file()->str:
         nombre_archivo = archivo_audio.name
         # Abrir un archivo en modo escritura binaria ('wb') para guardar el archivo de audio
         
-        with open(f'archivos/audios/{nombre_archivo}', 'wb') as new_file:
+        with open(nombre_archivo, 'wb') as new_file:
             # Leer los datos del archivo cargado y escribirlos en el nuevo archivo
             new_file.write(archivo_audio.read())
 
@@ -59,7 +59,7 @@ def procesamiento_audio(nombre_archivo: str, pipe)->list:
     list_transcripciones: dict = []
     fecha_hora_actual = datetime.datetime.now()
     fecha_hora = f"{fecha_hora_actual.strftime('%Y-%m-%d__%H:%M:%S')}"
-    nombre_archivo = f'archivos/audios/{nombre_archivo}'
+    #nombre_archivo = f'archivos/audios/{nombre_archivo}'
 
     # Abre el archivo de audio
     if nombre_archivo:
