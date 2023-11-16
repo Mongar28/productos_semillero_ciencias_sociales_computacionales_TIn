@@ -3,9 +3,7 @@ import torch
 from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
 from datasets import load_dataset
 
-def transcriptor(audio: str):
-    # Registra el tiempo de inicio
-    start_time = time.time()
+def transcriptor():
 
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
     torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
@@ -35,18 +33,7 @@ def transcriptor(audio: str):
     dataset = load_dataset("distil-whisper/librispeech_long", "clean", split="validation")
     sample = dataset[0]["audio"]
 
-    result = pipe(audio)
-    print(result["text"])
-
-    # Registra el tiempo de finalización
-    end_time = time.time()
-
-    # Calcula la diferencia de tiempo
-    execution_time = end_time - start_time
-
-    print(f"El script tomó {execution_time} segundos en ejecutarse.")
-    
-    return result["text"]
+    return pipe
 
 
 

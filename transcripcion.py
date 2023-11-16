@@ -2,9 +2,13 @@ from maqueta.mensaje_principal import encabezado
 from cuestionarios.formulario import formulario1
 from archivos.doc_transcripcion import transcripcion_doc
 from donaciones.donaciones_sc2 import donaciones
+from whisper3.whisper import transcriptor
 from app_transcripcion.speach_to_text import (mensaje_intruncciones,
                                               importar_audio_file,
                                               procesamiento_audio)
+
+
+pipe = transcriptor()
 
 
 # Importamos y corremos la funcion encabezado del modulo mensaje principal. 
@@ -17,7 +21,7 @@ mensaje_intruncciones()
 nombre_archivo = importar_audio_file()
 
 # importamos y corremos la funcion procesamiento_audio del modulo speach_to_text que contiene los scripts para procesar el audio con Whisper
-list_transcripciones = procesamiento_audio(nombre_archivo)
+list_transcripciones = procesamiento_audio(nombre_archivo, pipe)
 formulario_enviado = False
 
 # importamos y corremos la funci[on ]
