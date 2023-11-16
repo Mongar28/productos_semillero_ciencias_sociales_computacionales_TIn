@@ -59,6 +59,7 @@ def procesamiento_audio(nombre_archivo: str, pipe)->list:
     list_transcripciones: dict = []
     fecha_hora_actual = datetime.datetime.now()
     fecha_hora = f"{fecha_hora_actual.strftime('%Y-%m-%d__%H:%M:%S')}"
+    nombre_archivo = f'archivos/audios/{nombre_archivo}'
 
     # Abre el archivo de audio
     if nombre_archivo:
