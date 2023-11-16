@@ -6,6 +6,7 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 import datetime
 from decouple import config
 from dotenv import load_dotenv
+from whisper3.whisper import transcriptor
 
 
 
@@ -53,8 +54,8 @@ def importar_audio_file()->str:
 def procesamiento_audio(nombre_archivo: str)->list: 
     # Procesamiento del audio con Whisper-1
 
-    openai.api_key = config('API_KEY')
-    result: str = ''
+    #openai.api_key = config('API_KEY')
+    #result: str = ''
     list_transcripciones: dict = []
     fecha_hora_actual = datetime.datetime.now()
     fecha_hora = f"{fecha_hora_actual.strftime('%Y-%m-%d__%H:%M:%S')}"
@@ -62,15 +63,13 @@ def procesamiento_audio(nombre_archivo: str)->list:
     # Abre el archivo de audio
     if nombre_archivo:
         with open(f'archivos/audios/{nombre_archivo}', "rb") as audio_file:
-            resultado = openai.Audio.transcribe("whisper-1",
-                                            audio_file,
-                                            encoding="utf-8",
-                                            response_format="text")
+            resultado = transcriptor(audio_file)
         
         list_transcripciones.append({'nombre_archivo': nombre_archivo,
                                     'texto': resultado.strip(),
                                     'fecha': fecha_hora,
                                     'numero_palabras': len(resultado.strip().split())})
+        
 
         print(f'El archivo: {nombre_archivo} ha sido procesado\n', sep='-->')
         print(list_transcripciones)
