@@ -4,4 +4,5 @@ venv
 pruebas.py
 actas_procesadas.csv
 intervenciones_concejo_medellin.csv
+transcripcion_w3.py
 
