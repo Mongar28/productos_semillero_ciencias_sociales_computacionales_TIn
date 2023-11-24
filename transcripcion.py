@@ -1,5 +1,6 @@
 from maqueta.mensaje_principal import encabezado
 from cuestionarios.formulario import formulario1
+from autenticacion.autenticar import autenticacion_usuario
 from archivos.doc_transcripcion import transcripcion_doc
 from donaciones.donaciones_sc2 import donaciones
 from app_transcripcion.speach_to_text import (mensaje_intruncciones,
@@ -22,7 +23,7 @@ formulario_enviado = False
 
 # importamos y corremos la funci[on ]
 if len(list_transcripciones) > 0:
-    formulario_enviado = formulario1(formulario_enviado)
+    formulario_enviado = autenticacion_usuario()
     
 if formulario_enviado == True:
     transcripcion_doc(list_transcripciones)

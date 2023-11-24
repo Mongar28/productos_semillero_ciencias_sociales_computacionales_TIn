@@ -2,6 +2,7 @@ import streamlit as st
 import json
 import os
 from datetime import datetime
+import random
 import re
 
 def formulario1(formulario_enviado:bool):
@@ -26,7 +27,6 @@ def formulario1(formulario_enviado:bool):
         semillero_grupo = st.text_input("Semillero o Grupo", "Si no perteneces a ningún grupo, solo pon 'No'")
         interes_inv = st.text_input("Interés investigativo")
         comentario = st.text_input("¿Qué piensas sobre nuestros desarrollos?")
-
         submitted = st.form_submit_button("Submit")
         if submitted:
             if re.search(r".+?@udea.edu.co",correo): 
