@@ -1,6 +1,8 @@
 import json
 import streamlit as st
 
+# Función para la autenticación del usuario.
+
 def autenticacion_usuario():
     permiso_ingreso: bool = False
     correo_autenricacion = None
