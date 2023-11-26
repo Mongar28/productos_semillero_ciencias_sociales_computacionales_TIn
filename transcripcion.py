@@ -1,5 +1,8 @@
+import streamlit as st
+import os
+import json
+from datetime import datetime
 from maqueta.mensaje_principal import encabezado
-from cuestionarios.formulario import formulario1
 from autenticacion.autenticar import autenticacion_usuario
 from archivos.doc_transcripcion import transcripcion_doc
 from donaciones.donaciones_sc2 import donaciones
@@ -23,10 +26,29 @@ formulario_enviado = False
 
 # importamos y corremos la funci[on ]
 if len(list_transcripciones) > 0:
-    formulario_enviado = autenticacion_usuario()
+    formulario_enviado, correo, nombre = autenticacion_usuario()
     
 if formulario_enviado == True:
     transcripcion_doc(list_transcripciones)
     donaciones()
     
+    archivo_json = 'historial_uso_app.json'
+    if os.path.exists(archivo_json):
+        with open(archivo_json, "r") as json_file:
+            datos_uso = json.load(json_file)
+    else:
+        datos_uso = []  
+        
+    fecha_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    datos = {
+        'nombre_usuario': nombre,
+        'correo' : correo,
+        'fecha': fecha_actual,
+        'aplicacion_usada': 'transcriptor'
+    }
+
+    datos_uso.append(datos)
+    with open(archivo_json, "w", encoding="utf-8") as json_file:
+        json.dump(datos_uso, json_file, indent=4, ensure_ascii=False)   
 

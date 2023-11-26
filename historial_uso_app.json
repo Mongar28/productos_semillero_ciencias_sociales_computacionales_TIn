@@ -1,0 +1,50 @@
+[
+    {
+        "nombre_usuario": "Cristian Montoya Garces",
+        "correo": "cristian.montoyag1@udea.edu.co",
+        "fecha": "2023-11-25 10:26:39",
+        "aplicacion_usada": "transcriptor"
+    },
+    {
+        "nombre_usuario": null,
+        "correo": null,
+        "fecha": "2023-11-25 12:45:45",
+        "aplicacion_usada": "transcriptor"
+    },
+    {
+        "nombre_usuario": "Cristian Montoya Garces",
+        "correo": "cristian.montoyag1@udea.edu.co",
+        "fecha": "2023-11-25 12:46:56",
+        "aplicacion_usada": "transcriptor"
+    },
+    {
+        "nombre_usuario": null,
+        "correo": null,
+        "fecha": "2023-11-25 12:47:12",
+        "aplicacion_usada": "transcriptor"
+    },
+    {
+        "nombre_usuario": null,
+        "correo": null,
+        "fecha": "2023-11-25 12:48:43",
+        "aplicacion_usada": "transcriptor"
+    },
+    {
+        "nombre_usuario": "Cristian Montoya Garces",
+        "correo": "cristian.montoyag1@udea.edu.co",
+        "fecha": "2023-11-26 00:39:43",
+        "aplicacion_usada": "transcriptor"
+    },
+    {
+        "nombre_usuario": "Cristian Montoya Garces",
+        "correo": "cristian.montoyag1@udea.edu.co",
+        "fecha": "2023-11-26 00:41:08",
+        "aplicacion_usada": "transcriptor"
+    },
+    {
+        "nombre_usuario": "Cristian Montoya Garces",
+        "correo": "cristian.montoyag1@udea.edu.co",
+        "fecha": "2023-11-26 00:41:19",
+        "aplicacion_usada": "transcriptor"
+    }
+]

@@ -15,12 +15,6 @@ codigo = None
 def formulario1(formulario_enviado: bool):
     formulario_enviado = False
     archivo_json = "formulario_data.json"
-    #codigo = str(random.randint(1000, 9999))
-    # Lista de códigos predefinidos
-    codigos_predefinidos = range(1000,9999)
-
-    # Seleccionar aleatoriamente un código de la lista
-    codigo = random.choice(codigos_predefinidos)
 
     if os.path.exists(archivo_json):
         with open(archivo_json, "r") as json_file:
@@ -48,7 +42,7 @@ def formulario1(formulario_enviado: bool):
                 fecha_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 nuevo_datos = {
                     "Fecha": fecha_actual,
-                    "Nombre": nombre,
+                    "Nombre": nombre.title(),
                     "Correo": correo,
                     "Contraseña": contraseña,
                     "Rol": rol,
