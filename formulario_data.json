@@ -10,5 +10,42 @@
         "Semillero_o_Grupo": "Semillero de Ciencias Sociales Computacionales",
         "Interés_investigativo": "La aplicación de  técnicas comunicacionales en el área de las ciencias sociales",
         "Comentario": "Me parace que es una excelente propuesta para acercar las nuevas tecnologías a los estudiantes, docentes e investigadores  con un enfoque investigativo."
+    },
+    {
+        "Fecha": "2023-11-28 20:16:10",
+        "Nombre": "Manuela Torres Rendón",
+        "Correo": "manuela.torresr1@udea.edu.co",
+        "Contraseña": "nunuitasinchan",
+        "Rol": "Estudiante",
+        "Programa": "Ciencia política",
+        "Dependencia": "Derecho y ciencia política",
+        "Semillero_o_Grupo": "Semillero Ágora",
+        "Interés_investigativo": "Política",
+        "Comentario": "Son funcionales y muy didacticos"
+    },
+    {
+        "Fecha": "2023-11-28 23:40:08",
+        "Nombre": "santiago rivera vásquez",
+        "Correo": "santiago.riverav1@udea.edu.co",
+        "Contraseña": "Casa3760513",
+        "Rol": "Estudiante",
+        "Programa": "Antropología",
+        "Dependencia": "Facultad de Ciencias Sociales y Humanas",
+        "Semillero_o_Grupo": "No",
+        "Interés_investigativo": "Estudios de memoria y antropología visual",
+        "Comentario": "Es una herramienta demasiado útil"
+    },
+    {
+        "Fecha": "2023-11-30 20:25:08",
+        "Nombre": "Yesica Valencia Tobón",
+        "Correo": "yesica.valenciat@udea.edu.co",
+        "Contraseña": "Kojoyin.19",
+        "Rol": "Estudiante",
+        "Programa": "Ciencia Política",
+        "Dependencia": "",
+        "Semillero_o_Grupo": "Acción estatal y analítica de datos",
+        "Interés_investigativo": "Movilización social, reincorporación, memoria y paz",
+        "Comentario": "No"
     }
+
 ]

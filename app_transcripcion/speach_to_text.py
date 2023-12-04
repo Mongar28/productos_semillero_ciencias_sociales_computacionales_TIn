@@ -7,6 +7,14 @@ import datetime
 from decouple import config
 from dotenv import load_dotenv
 
+from datetime import datetime
+import datetime
+import time
+import torch
+from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
+from datasets import load_dataset
+
+
 
 
 
@@ -45,7 +53,8 @@ def importar_audio_file()->str:
 
         st.success(f'Archivo de audio "{nombre_archivo}" ha sido guardado exitosamente.')
         # No olvides manejar los casos en los que no se cargue un archivo o haya algún error.
-        st.success(f'Archivo de audio "{nombre_archivo}" pronto estará procesandose.')
+        st.success(f'Una vez te autentiques con el usuario y la contraseña, se iniciará el procesamiento del audio.')
+        #st.success(f'Archivo de audio "{nombre_archivo}" pronto estará procesandose luego de que.')
     
     return nombre_archivo
 
@@ -79,17 +88,58 @@ def procesamiento_audio(nombre_archivo: str)->list:
         st.markdown(''' ## **Texto:** ''')
 
     texto_a_mostar = ''
-    num_caracteres = 0
     if len(list_transcripciones) > 0:
         
         texto_a_mostar = list_transcripciones[0]['texto']
-        num_caracteres = round(len(texto_a_mostar) /3)
         
-        st.write(f'''
-        {texto_a_mostar[:num_caracteres]}...
-        ''')
-        st.success(f'El resto del texto lo podrás descargar una vez diligencies el formulario')
+        st.write(texto_a_mostar)
     
     return list_transcripciones
 
 
+@st.cache_resource
+def procesamiento_audio2(audio):
+    
+    list_transcripciones = []
+    fecha_hora_actual = datetime.datetime.now()
+    fecha_hora = f"{fecha_hora_actual.strftime('%Y-%m-%d__%H:%M:%S')}"
+    
+    device = "cuda:0" if torch.cuda.is_available() else "cpu"
+    torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
+
+    model_id = "openai/whisper-base"
+
+    model = AutoModelForSpeechSeq2Seq.from_pretrained(
+        model_id, torch_dtype=torch_dtype, low_cpu_mem_usage=True, use_safetensors=True
+    )
+    model.to(device)
+
+    processor = AutoProcessor.from_pretrained(model_id)
+
+    pipe = pipeline(
+        "automatic-speech-recognition",
+        model=model,
+        tokenizer=processor.tokenizer,
+        feature_extractor=processor.feature_extractor,
+        max_new_tokens=128,
+        chunk_length_s=30,
+        batch_size=16,
+        return_timestamps=True,
+        torch_dtype=torch_dtype,
+        device=device,
+    )
+
+    dataset = load_dataset("distil-whisper/librispeech_long", "clean", split="validation")
+    
+    result = pipe(audio)
+    
+    list_transcripciones.append({'nombre_archivo': audio,
+                            'texto': result["text"],
+                            'fecha': fecha_hora,
+                            'numero_palabras': len(result["text"].strip().split())})
+    
+    st.success(f'Archivo de audio "{audio}" ha sido procesado.')
+    st.markdown(''' ## **Texto:** ''')
+    st.write(result["text"])
+
+    return list_transcripciones

@@ -1,10 +1,14 @@
 import streamlit as st
 from PIL import Image
+import os
 import base64
 import time
 import pandas as pd
 from maqueta.mensaje_principal import encabezado
 from enviar_correo.correo import  correo2
+from autenticacion.autenticar import autenticacion_usuario, historial_usuario, historial_usuario
+from donaciones.donaciones_sc2 import donaciones
+import json
 
 #from motor_de_busqueda.motor_busqueda.pdf_miner import limpiador1
 #from motor_de_busqueda.patrones_regex.patrones_actas import Patrones_actas
@@ -12,6 +16,7 @@ from enviar_correo.correo import  correo2
 import pandas as pd 
 from unidecode import unidecode
 import re
+
 
 # Definimos las variables
 df_resultado = None
@@ -106,27 +111,57 @@ with st.form("Ingresa el operador lógico y las palabras clave"):
                 mostrar_descarga_correo = True
                 st.success('¡Búsqueda completada!')
 
-#if mostrar_descarga_correo == True:
-with st.spinner('Enviando...', ):
-    # Agregar un botón para descargar el archivo CSV
-    with open(ruta_nombre_archivo, "r") as file:
-        btn = st.download_button(
-            label="Descargar CSV",
-            data=file,
-            file_name='resultados_busqueda.csv',
-        )
-        
-# Agregar un botón para enviar por correo electrónico
-    with st.form("Ingresa el correo electronico"):
-        correo_destino = st.text_input('Ingrese el correo electrónico de destino y luego Submit')
-        submitted = st.form_submit_button("Submit")
-        if submitted:
-            st.success(f'El correo al que se enviará el archivo es: {correo_destino}')  
-            correo2(ruta_nombre_archivo,correo_destino)
-            st.balloons()
+st.success('Para poder descargar o enviar el archivo CSV con la información, primero debes autenticarte.') 
+formulario_enviado = None
+formulario_enviado, correo, nombre = autenticacion_usuario()
+
+if formulario_enviado == True:
+    
+    historial_usuario(correo, 'buscador_tematico') 
+
+    #if mostrar_descarga_correo == True:
+    with st.spinner('Enviando...', ):
+        # Agregar un botón para descargar el archivo CSV
+        with open(ruta_nombre_archivo, "r") as file:
+            btn = st.download_button(
+                label="Descargar CSV",
+                data=file,
+                file_name='resultados_busqueda.csv',
+            )
             
-st.write("Outside the form")
-#st.stop()
+    # Agregar un botón para enviar por correo electrónico
+        with st.form("Ingresa el correo electronico"):
+            correo_destino = st.text_input('Ingrese el correo electrónico de destino y luego Submit')
+            submitted = st.form_submit_button("Submit")
+            if submitted:
+                st.success(f'El correo al que se enviará el archivo es: {correo_destino}')  
+                correo2(ruta_nombre_archivo,correo_destino)
+                st.balloons()
+                
+    st.write("Outside the form")
+ 
+    donaciones()
+    
+    archivo_json = 'historial_uso_app.json'
+    if os.path.exists(archivo_json):
+        with open(archivo_json, "r") as json_file:
+            datos_uso = json.load(json_file)
+    else:
+        datos_uso = []  
+        
+    from datetime import datetime
+    fecha_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    datos = {
+        'nombre_usuario': nombre,
+        'correo' : correo,
+        'fecha': fecha_actual,
+        'aplicacion_usada': 'buscador_tematico'
+    }
+
+    datos_uso.append(datos)
+    with open(archivo_json, "w", encoding="utf-8") as json_file:
+        json.dump(datos_uso, json_file, indent=4, ensure_ascii=False)  
 
 
 
