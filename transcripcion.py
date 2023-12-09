@@ -7,8 +7,9 @@ from autenticacion.autenticar import autenticacion_usuario, historial_usuario
 from archivos.doc_transcripcion import transcripcion_doc
 from donaciones.donaciones_sc2 import donaciones
 from app_transcripcion.speach_to_text import (mensaje_intruncciones,
-                                              importar_audio_file,
-                                              procesamiento_audio2)
+                                              importar_audio_file2,
+                                              procesamiento_audio3,
+                                              whisper3)
 
 
 from datetime import datetime
@@ -18,7 +19,8 @@ import torch
 from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
 from datasets import load_dataset
 
-
+pipe = whisper3()
+result = None
 
 
 # Importamos y corremos la funcion encabezado del modulo mensaje principal. 
@@ -30,7 +32,10 @@ mensaje_intruncciones()
 formulario_enviado = False
 
 # importamos y corremos la funcion importar_audio_file del modulo speach_to_text que contiene la caja para subir el archivo de audio
-nombre_archivo = importar_audio_file()
+
+nombre_archivo = importar_audio_file2()
+ruta_archivo = f'archivos/audios/{nombre_archivo}'
+
 
 if len(nombre_archivo) > 0:
     formulario_enviado, correo, nombre = autenticacion_usuario()
@@ -39,7 +44,8 @@ if formulario_enviado == True:
     
     historial_usuario(correo, 'transcriptor') 
     # importamos y corremos la funcion procesamiento_audio del modulo speach_to_text que contiene los scripts para procesar el audio con Whisper
-    list_transcripciones = procesamiento_audio2(nombre_archivo)
+    result = pipe(ruta_archivo, return_timestamps=True, generate_kwargs={"language": "spanish"})
+    list_transcripciones = procesamiento_audio3(ruta_archivo, nombre_archivo, result)
     transcripcion_doc(list_transcripciones)
     donaciones()
     

@@ -40,7 +40,7 @@ def mensaje_intruncciones()->None:
     
 def importar_audio_file()->str:
     # Cargar el archivo de audio
-    archivo_audio = st.file_uploader('Arrastra o ingresa tu archivo .mp3, .ma4, .ogg', type=['.mp3','.m4a', '.ogg'])
+    archivo_audio = st.file_uploader('Arrastra o ingresa tu archivo .mp3, .ma4, .ogg, .aac', type=['.mp3','.m4a', '.ogg', '.aac'])
     nombre_archivo: str = ''
     # Verificar si se ha cargado un archivo
     if archivo_audio is not None:
@@ -97,6 +97,7 @@ def procesamiento_audio(nombre_archivo: str)->list:
     return list_transcripciones
 
 
+
 @st.cache_resource
 def procesamiento_audio2(audio):
     
@@ -107,7 +108,7 @@ def procesamiento_audio2(audio):
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
     torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
 
-    model_id = "openai/whisper-base"
+    model_id = "openai/whisper-medium"
 
     model = AutoModelForSpeechSeq2Seq.from_pretrained(
         model_id, torch_dtype=torch_dtype, low_cpu_mem_usage=True, use_safetensors=True
@@ -129,9 +130,9 @@ def procesamiento_audio2(audio):
         device=device,
     )
 
-    dataset = load_dataset("distil-whisper/librispeech_long", "clean", split="validation")
-    
-    result = pipe(audio)
+    #dataset = load_dataset("distil-whisper/librispeech_long", "clean", split="validation")
+    ruta = f'archivos/audios/{audio}'
+    result = pipe(ruta, return_timestamps=True, generate_kwargs={"language": "spanish"})
     
     list_transcripciones.append({'nombre_archivo': audio,
                             'texto': result["text"],
@@ -143,3 +144,77 @@ def procesamiento_audio2(audio):
     st.write(result["text"])
 
     return list_transcripciones
+
+
+@st.cache_resource
+def whisper3():
+
+    device = "cuda:0" if torch.cuda.is_available() else "cpu"
+    torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
+
+    model_id = "openai/whisper-medium"
+
+    model = AutoModelForSpeechSeq2Seq.from_pretrained(
+        model_id, torch_dtype=torch_dtype, low_cpu_mem_usage=True, use_safetensors=True
+    )
+    model.to(device)
+
+    processor = AutoProcessor.from_pretrained(model_id)
+
+    pipe = pipeline(
+        "automatic-speech-recognition",
+        model=model,
+        tokenizer=processor.tokenizer,
+        feature_extractor=processor.feature_extractor,
+        max_new_tokens=128,
+        chunk_length_s=30,
+        batch_size=16,
+        return_timestamps=True,
+        torch_dtype=torch_dtype,
+        device=device,
+    )
+    
+    return pipe
+
+
+def procesamiento_audio3(audio,nombre_archivo, result):
+    
+    list_transcripciones = []
+    fecha_hora_actual = datetime.datetime.now()
+    fecha_hora = f"{fecha_hora_actual.strftime('%Y-%m-%d__%H:%M:%S')}"
+    
+    
+    
+    list_transcripciones.append({'nombre_archivo': nombre_archivo,
+                            'texto': result["text"],
+                            'fecha': fecha_hora,
+                            'numero_palabras': len(result["text"].strip().split())})
+    
+    st.success(f'Archivo de audio "{audio}" ha sido procesado.')
+    st.markdown(''' ## **Texto:** ''')
+    st.write(result["text"])
+
+    return list_transcripciones
+
+
+def importar_audio_file2()->str:
+    archivo_audio = st.file_uploader('Arrastra o ingresa tu archivo .mp3, .ma4, .ogg, .aac', type=['.mp3','.m4a', '.ogg', '.aac'])
+
+    nombre_archivo: str = ''
+    # Verificar si se ha cargado un archivo
+    if archivo_audio is not None:
+        nombre_archivo = archivo_audio.name
+        # Abrir un archivo en modo escritura binaria ('wb') para guardar el archivo de audio
+        
+        with open(f'archivos/audios/{nombre_archivo}', 'wb') as new_file:
+            # Leer los datos del archivo cargado y escribirlos en el nuevo archivo
+            new_file.write(archivo_audio.read())
+
+        st.success(f'Archivo de audio "{nombre_archivo}" ha sido guardado exitosamente.')
+        # No olvides manejar los casos en los que no se cargue un archivo o haya algún error.
+        st.success(f'Una vez te autentiques con el usuario y la contraseña, se iniciará el procesamiento del audio.')
+        #st.success(f'Archivo de audio "{nombre_archivo}" pronto estará procesandose luego de que.')
+
+
+    
+    return nombre_archivo
