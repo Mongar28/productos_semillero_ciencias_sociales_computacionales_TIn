@@ -227,7 +227,6 @@ def importar_audio_file2()->str:
 
 @st.cache_resource
 def whisper4():
-
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
     torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
 
@@ -243,6 +242,7 @@ def whisper4():
     model = AutoModelForSpeechSeq2Seq.from_pretrained(
         model_id, torch_dtype=torch_dtype, low_cpu_mem_usage=True, use_safetensors=True
     )
+
     model.to(device)
 
     processor = AutoProcessor.from_pretrained(model_id)
@@ -255,7 +255,7 @@ def whisper4():
         max_new_tokens=128,
         chunk_length_s=30,
         batch_size=16,
-        return_timestamps=True,
+
         generate_kwargs={"assistant_model": assistant_model},
         torch_dtype=torch_dtype,
         device=device,
