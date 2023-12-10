@@ -29,7 +29,7 @@ encabezado()
 # importamos y corremos la funcion mensaje_intruncciones  del modulo speach_to_text que contiene el mensaje y las instrucciones de la app
 mensaje_intruncciones()
 with st.spinner('Cargando el modelo para la transcripción...', ):
-    pipe = whisper4()
+    pipe = whisper3()
     result = None
 
 formulario_enviado = False
